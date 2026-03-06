@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -6,11 +7,15 @@
   --color-leica-dark: #1a1a1a;
   --color-leica-gray: #333333;
   --color-leica-light: #f5f5f5;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Sarabun", ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   @apply bg-leica-black text-white font-sans antialiased;
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(226, 0, 15, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.05), transparent 25%);
+  background-attachment: fixed;
 }
 
 /* Custom scrollbar */
@@ -18,16 +23,30 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #111; 
+  background: transparent; 
 }
 ::-webkit-scrollbar-thumb {
-  background: #333; 
+  background: rgba(255, 255, 255, 0.2); 
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #e2000f; 
+  background: rgba(255, 255, 255, 0.4); 
 }
 
 .glass-panel {
-  @apply bg-leica-dark/80 backdrop-blur-md border border-white/10;
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-white/20 rounded-full;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/30;
 }
