@@ -11,14 +11,20 @@ export default function Home() {
   
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [viewProduct, setViewProduct] = useState<Product | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
-  
+
   // Buy form state
   const [buyerName, setBuyerName] = useState('');
   const [buyerPhone, setBuyerPhone] = useState('');
   const [buyerAddress, setBuyerAddress] = useState('');
 
   const availableProducts = products.filter(p => p.status === 'ถ่ายรูปแล้ว' || p.status === 'รอถ่ายรูป');
+
+  const handleViewProduct = (product: Product) => {
+    setViewProduct(product);
+    setCurrentImageIndex(0);
+  };
 
   const handleSearchOrder = () => {
     if (!searchPhone.trim()) {
@@ -147,7 +153,7 @@ export default function Home() {
             <div 
               key={product.id} 
               className="glass-panel rounded-2xl overflow-hidden group hover:border-leica-red/50 transition-colors cursor-pointer flex flex-col"
-              onClick={() => setViewProduct(product)}
+              onClick={() => handleViewProduct(product)}
             >
               <div className="aspect-[4/3] bg-leica-gray flex items-center justify-center relative overflow-hidden">
                 {product.images.length > 0 ? (
@@ -217,7 +223,7 @@ export default function Home() {
               <div className="flex-grow flex items-center justify-center p-4 relative">
                 {viewProduct.images.length > 0 ? (
                   <img 
-                    src={viewProduct.images[0].startsWith('data:image') ? viewProduct.images[0] : `https://lh3.googleusercontent.com/d/${viewProduct.images[0]}`} 
+                    src={viewProduct.images[currentImageIndex].startsWith('data:image') ? viewProduct.images[currentImageIndex] : `https://lh3.googleusercontent.com/d/${viewProduct.images[currentImageIndex]}`} 
                     alt={viewProduct.model}
                     className="max-w-full max-h-[500px] object-contain"
                     referrerPolicy="no-referrer"
@@ -241,7 +247,8 @@ export default function Home() {
                       key={idx}
                       src={img.startsWith('data:image') ? img : `https://lh3.googleusercontent.com/d/${img}`} 
                       alt={`${viewProduct.model} ${idx + 1}`}
-                      className="w-16 h-16 object-cover rounded cursor-pointer border-2 border-transparent hover:border-leica-red transition-colors flex-shrink-0"
+                      onClick={() => setCurrentImageIndex(idx)}
+                      className={`w-16 h-16 object-cover rounded cursor-pointer border-2 transition-colors flex-shrink-0 ${currentImageIndex === idx ? 'border-leica-red' : 'border-transparent hover:border-white/50'}`}
                       referrerPolicy="no-referrer"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${viewProduct.model}${idx}/100/100`;
@@ -263,7 +270,7 @@ export default function Home() {
               <div className="space-y-4 flex-grow">
                 <div>
                   <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-1">รายละเอียด / ตำหนิ</h4>
-                  <p className="text-gray-300 bg-white/5 p-4 rounded-lg leading-relaxed">
+                  <p className="text-gray-300 bg-white/5 p-4 rounded-lg leading-relaxed whitespace-pre-wrap">
                     {viewProduct.note || 'ไม่มีรายละเอียดเพิ่มเติม'}
                   </p>
                 </div>
