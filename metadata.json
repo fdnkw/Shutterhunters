@@ -1,0 +1,5 @@
+{
+  "name": "Shutterhunters",
+  "description": "ระบบจัดการร้านกล้อง Leica และอุปกรณ์ถ่ายภาพ",
+  "requestFramePermissions": ["camera"]
+}

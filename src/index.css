@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --color-leica-red: #e2000f;
+  --color-leica-black: #111111;
+  --color-leica-dark: #1a1a1a;
+  --color-leica-gray: #333333;
+  --color-leica-light: #f5f5f5;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply bg-leica-black text-white font-sans antialiased;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #111; 
+}
+::-webkit-scrollbar-thumb {
+  background: #333; 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e2000f; 
+}
+
+.glass-panel {
+  @apply bg-leica-dark/80 backdrop-blur-md border border-white/10;
+}
