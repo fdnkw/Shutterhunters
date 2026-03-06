@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import { Product, User, Order } from './types';
 
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxvdXHSCAt7rK4qI-Lc0MAS9t278AAzjfjyQBDHM3zpIdbZ3pMZnIjkr2VlMVu4LptDnw/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyMeZPNoTF-ZIrXc4EPOqO25mgD-5Te77I59UmZaeyCg729GxhBaxxDUop32bQWxledsQ/exec';
 
 interface AppState {
   user: User | null;
+  users: User[];
   products: Product[];
   orders: Order[];
   isLoading: boolean;
@@ -14,10 +15,14 @@ interface AppState {
   addProduct: (product: Product) => Promise<void>;
   updateProduct: (id: string, product: Partial<Product>) => Promise<void>;
   addOrder: (order: Order) => Promise<void>;
+  addUser: (user: User) => Promise<void>;
+  updateUser: (id: string, user: Partial<User>) => Promise<void>;
+  deleteUser: (id: string) => Promise<void>;
 }
 
 export const useStore = create<AppState>((set) => ({
   user: null,
+  users: [],
   products: [],
   orders: [],
   isLoading: false,
@@ -33,6 +38,7 @@ export const useStore = create<AppState>((set) => ({
       set({ 
         products: data.products || [], 
         orders: data.orders || [], 
+        users: data.users || [],
         isLoading: false 
       });
     } catch (error) {
@@ -85,6 +91,49 @@ export const useStore = create<AppState>((set) => ({
       });
     } catch (error) {
       console.error('Error adding order to GAS:', error);
+    }
+  },
+
+  addUser: async (newUser) => {
+    set((state) => ({ users: [...state.users, newUser] }));
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'addUser', payload: newUser })
+      });
+    } catch (error) {
+      console.error('Error adding user to GAS:', error);
+    }
+  },
+
+  updateUser: async (id, updated) => {
+    set((state) => ({
+      users: state.users.map((u) => (u.id === id ? { ...u, ...updated } : u)),
+    }));
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'updateUser', payload: { id, ...updated } })
+      });
+    } catch (error) {
+      console.error('Error updating user in GAS:', error);
+    }
+  },
+
+  deleteUser: async (id) => {
+    set((state) => ({
+      users: state.users.filter((u) => u.id !== id),
+    }));
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'deleteUser', payload: { id } })
+      });
+    } catch (error) {
+      console.error('Error deleting user in GAS:', error);
     }
   },
 }));
