@@ -17,6 +17,7 @@ export default function Navbar() {
     ] : []),
     ...(user?.role === 'Admin' ? [
       { name: 'Dashboard', path: '/dashboard' },
+      { name: 'จัดการผู้ใช้งาน', path: '/users' },
     ] : []),
   ];
 
