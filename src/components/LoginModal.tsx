@@ -4,7 +4,7 @@ import { LogIn, X } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export default function LoginModal() {
-  const { user, login } = useStore();
+  const { user, users, login } = useStore();
   const [isOpen, setIsOpen] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -14,34 +14,36 @@ export default function LoginModal() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login logic
-    if (username === 'admin' && password === 'admin') {
-      login({
-        id: '1',
-        username: 'admin',
-        name: 'Admin User',
-        role: 'Admin',
-        profilePic: 'https://picsum.photos/seed/admin/100/100',
-      });
+    
+    // Check against real users from Google Sheets
+    const foundUser = users.find(u => u.username === username && u.password === password);
+    
+    if (foundUser) {
+      login(foundUser);
       setIsOpen(false);
-    } else if (username === 'user' && password === 'user') {
-      login({
-        id: '2',
-        username: 'user',
-        name: 'Staff User',
-        role: 'User',
-        profilePic: 'https://picsum.photos/seed/user/100/100',
-      });
-      setIsOpen(false);
+      setError('');
     } else {
-      setError('Invalid credentials. Try admin/admin or user/user');
+      // Fallback for initial setup if no users exist yet
+      if (users.length === 0 && username === 'admin' && password === 'admin') {
+        login({
+          id: '1',
+          username: 'admin',
+          name: 'Admin User',
+          role: 'Admin',
+          profilePic: 'https://picsum.photos/seed/admin/100/100',
+        });
+        setIsOpen(false);
+        setError('');
+      } else {
+        setError('รหัสผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+      }
     }
   };
 
   return (
     <>
-      {/* Hidden button bottom left */}
-      <div className="fixed bottom-4 left-4 z-40 group">
+      {/* Hidden button bottom right */}
+      <div className="fixed bottom-4 right-4 z-40 group">
         <div className="w-12 h-12 rounded-full bg-transparent flex items-center justify-center transition-all duration-300 group-hover:bg-leica-red/20">
           <button
             onClick={() => setIsOpen(true)}
