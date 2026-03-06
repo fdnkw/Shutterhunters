@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Product, User, Order } from './types';
 
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyqg-2mD6FYz0cahc4ryS7AWjsFF-I25AyDNJo-2fS2oUBJCaV6ykQsZIs3pL_zEFHoBw/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxvdXHSCAt7rK4qI-Lc0MAS9t278AAzjfjyQBDHM3zpIdbZ3pMZnIjkr2VlMVu4LptDnw/exec';
 
 interface AppState {
   user: User | null;
