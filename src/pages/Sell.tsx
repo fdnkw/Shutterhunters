@@ -3,12 +3,14 @@ import { useStore } from '../store';
 import { Product, Order } from '../types';
 import { Search, ShoppingCart, Printer, X, CheckCircle2, ScanLine } from 'lucide-react';
 import { format } from 'date-fns';
+import BarcodeScanner from '../components/BarcodeScanner';
 
 export default function Sell() {
   const { products, orders, addOrder, updateProduct, user } = useStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [receiptOrder, setReceiptOrder] = useState<Order | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
   
   // Buyer form state
   const [buyerName, setBuyerName] = useState('');
@@ -78,6 +80,7 @@ export default function Sell() {
             />
           </div>
           <button
+            onClick={() => setIsScanning(true)}
             className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors whitespace-nowrap"
             title="สแกนผ่านกล้อง"
           >
@@ -315,6 +318,17 @@ export default function Sell() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Barcode Scanner Modal */}
+      {isScanning && (
+        <BarcodeScanner 
+          onResult={(result) => {
+            setSearchTerm(result);
+            setIsScanning(false);
+          }}
+          onClose={() => setIsScanning(false)}
+        />
       )}
     </div>
   );
