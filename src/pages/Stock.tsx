@@ -3,7 +3,6 @@ import { useStore } from '../store';
 import { Product, ProductCondition, ProductStatus } from '../types';
 import { Plus, Search, QrCode, Printer, X, Image as ImageIcon, ScanLine } from 'lucide-react';
 import QRCode from 'react-qr-code';
-import Barcode from 'react-barcode';
 import { format } from 'date-fns';
 import BarcodeScanner from '../components/BarcodeScanner';
 
@@ -217,7 +216,19 @@ export default function Stock() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs text-gray-400 mb-1 uppercase">ยี่ห้อ</label>
-                    <input type="text" required value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-leica-red focus:outline-none" />
+                    <select required value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-leica-red focus:outline-none appearance-none">
+                      <option value="" disabled>เลือกยี่ห้อ</option>
+                      <option value="Leica">Leica</option>
+                      <option value="Voigtlander">Voigtlander</option>
+                      <option value="Sigma">Sigma</option>
+                      <option value="Ricoh">Ricoh</option>
+                      <option value="Hasselblad">Hasselblad</option>
+                      <option value="Fujifilm">Fujifilm</option>
+                      <option value="Sony">Sony</option>
+                      <option value="Contax">Contax</option>
+                      <option value="Olympus">Olympus</option>
+                      <option value="Other brand">Other brand</option>
+                    </select>
                   </div>
                   <div>
                     <label className="block text-xs text-gray-400 mb-1 uppercase">รุ่น</label>
@@ -260,11 +271,11 @@ export default function Stock() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs text-gray-400 mb-1 uppercase">ราคาทุน</label>
-                    <input type="number" required value={formData.costPrice} onChange={e => setFormData({...formData, costPrice: Number(e.target.value)})} className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-leica-red focus:outline-none font-mono" />
+                    <input type="number" required value={formData.costPrice === 0 ? '' : formData.costPrice} onChange={e => setFormData({...formData, costPrice: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-leica-red focus:outline-none font-mono" />
                   </div>
                   <div>
                     <label className="block text-xs text-gray-400 mb-1 uppercase">ราคาขาย</label>
-                    <input type="number" required value={formData.sellPrice} onChange={e => setFormData({...formData, sellPrice: Number(e.target.value)})} className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-leica-red focus:outline-none font-mono" />
+                    <input type="number" required value={formData.sellPrice === 0 ? '' : formData.sellPrice} onChange={e => setFormData({...formData, sellPrice: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-leica-red focus:outline-none font-mono" />
                   </div>
                 </div>
                 <div>
@@ -346,41 +357,31 @@ export default function Stock() {
       {/* Print Modal */}
       {printProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
-          <div className="bg-white text-black w-full max-w-md rounded-lg p-8 relative print:w-full print:h-full print:p-0 print:m-0 print:bg-white print:rounded-none">
+          <div className="bg-white text-black w-full max-w-sm rounded-lg p-6 relative print:w-[50mm] print:h-auto print:p-2 print:m-0 print:bg-white print:rounded-none">
             <button onClick={() => setPrintProduct(null)} className="absolute top-4 right-4 text-gray-400 hover:text-black print:hidden">
               <X size={24} />
             </button>
             
-            <div className="text-center space-y-6 print:space-y-4" id="print-area">
-              <div className="border-b-2 border-black pb-4">
-                <h2 className="text-2xl font-bold uppercase tracking-widest">Shutterhunters</h2>
-                <p className="text-sm text-gray-600">{printProduct.brand} {printProduct.model}</p>
-                <p className="text-xs text-gray-500 font-mono mt-1">S/N: {printProduct.serialNumber}</p>
+            <div className="text-center space-y-2 print:space-y-1" id="print-area">
+              <div className="border-b border-black pb-2">
+                <h2 className="text-sm font-bold uppercase tracking-widest">Shutterhunters</h2>
+                <p className="text-[10px] text-gray-600 font-bold">{printProduct.brand} {printProduct.model}</p>
+                <p className="text-[8px] text-gray-500 font-mono mt-0.5">S/N: {printProduct.serialNumber}</p>
               </div>
               
-              <div className="flex justify-center py-4">
-                <QRCode value={printProduct.id} size={150} level="H" />
+              <div className="flex justify-center py-2">
+                <QRCode value={printProduct.id} size={80} level="H" />
               </div>
               
-              <div className="flex justify-center">
-                <Barcode value={printProduct.id} width={2} height={50} fontSize={14} background="#ffffff" lineColor="#000000" />
-              </div>
-              
-              <div className="pt-4 border-t-2 border-black flex justify-between items-end">
-                <div className="text-left">
-                  <p className="text-xs text-gray-500 uppercase">Condition</p>
-                  <p className="font-bold">{printProduct.condition}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-gray-500 uppercase">Price</p>
-                  <p className="text-xl font-bold font-mono">฿{printProduct.sellPrice.toLocaleString()}</p>
-                </div>
+              <div className="pt-2 border-t border-black flex flex-col items-center">
+                <p className="text-[10px] font-bold font-mono">฿{printProduct.sellPrice.toLocaleString()}</p>
+                <p className="text-[8px] text-gray-600 mt-1">IG: ShutterHunters.bkk</p>
               </div>
             </div>
 
-            <div className="mt-8 flex justify-center print:hidden">
-              <button onClick={handlePrint} className="bg-black text-white px-8 py-3 rounded font-bold flex items-center gap-2 hover:bg-gray-800 transition-colors">
-                <Printer size={20} />
+            <div className="mt-6 flex justify-center print:hidden">
+              <button onClick={handlePrint} className="bg-black text-white px-6 py-2 rounded font-bold flex items-center gap-2 hover:bg-gray-800 transition-colors">
+                <Printer size={18} />
                 พิมพ์ฉลาก
               </button>
             </div>
