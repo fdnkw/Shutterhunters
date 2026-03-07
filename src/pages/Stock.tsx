@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useStore } from '../store';
 import { Product, ProductCondition, ProductStatus } from '../types';
-import { Plus, Search, QrCode, Printer, X, Image as ImageIcon } from 'lucide-react';
+import { Plus, Search, QrCode, Printer, X, Image as ImageIcon, ScanLine } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import Barcode from 'react-barcode';
 import { format } from 'date-fns';
+import BarcodeScanner from '../components/BarcodeScanner';
 
 export default function Stock() {
   const { products, addProduct, updateProduct, user } = useStore();
@@ -12,6 +13,7 @@ export default function Stock() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [printProduct, setPrintProduct] = useState<Product | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState<Partial<Product>>({
@@ -224,7 +226,17 @@ export default function Stock() {
                 </div>
                 <div>
                   <label className="block text-xs text-gray-400 mb-1 uppercase">Serial Number</label>
-                  <input type="text" required value={formData.serialNumber} onChange={e => setFormData({...formData, serialNumber: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-leica-red focus:outline-none font-mono" />
+                  <div className="flex gap-2">
+                    <input type="text" required value={formData.serialNumber} onChange={e => setFormData({...formData, serialNumber: e.target.value})} className="flex-1 bg-black/50 border border-white/10 rounded px-3 py-2 text-white focus:border-leica-red focus:outline-none font-mono" />
+                    <button
+                      type="button"
+                      onClick={() => setIsScanning(true)}
+                      className="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded transition-colors flex items-center justify-center"
+                      title="สแกนบาร์โค้ด"
+                    >
+                      <ScanLine size={20} />
+                    </button>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -374,6 +386,17 @@ export default function Stock() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Barcode Scanner Modal */}
+      {isScanning && (
+        <BarcodeScanner 
+          onResult={(result) => {
+            setFormData(prev => ({ ...prev, serialNumber: result }));
+            setIsScanning(false);
+          }}
+          onClose={() => setIsScanning(false)}
+        />
       )}
     </div>
   );
