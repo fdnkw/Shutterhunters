@@ -271,7 +271,7 @@ export default function Home() {
                 
                 {/* Thumbnails if multiple images */}
                 {viewProduct.images.length > 1 && (
-                  <div className="flex gap-2 p-4 overflow-x-auto bg-black/20 custom-scrollbar">
+                  <div className="flex gap-2 p-4 overflow-x-auto bg-black/20 custom-scrollbar shrink-0">
                     {viewProduct.images.map((img, idx) => (
                       <img 
                         key={idx}
