@@ -249,7 +249,7 @@ export default function Home() {
             
             <div className="flex flex-col md:flex-row overflow-y-auto custom-scrollbar h-full">
               {/* Image Gallery Side */}
-              <div className="w-full md:w-1/2 bg-leica-gray min-h-[300px] flex flex-col">
+              <div className="w-full md:w-1/2 bg-leica-gray min-h-[300px] flex flex-col shrink-0">
                 <div className="flex-grow flex items-center justify-center p-4 relative">
                   {viewProduct.images.length > 0 ? (
                     <img 
@@ -290,7 +290,7 @@ export default function Home() {
               </div>
 
               {/* Details Side */}
-              <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col">
+              <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col shrink-0">
                 <div className="mb-6 pr-8">
                   <p className="text-leica-red font-bold uppercase tracking-widest mb-1">{viewProduct.brand}</p>
                   <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">{viewProduct.model}</h2>
