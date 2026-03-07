@@ -238,84 +238,86 @@ export default function Home() {
 
       {/* View Product Details Modal */}
       {viewProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="glass-panel w-full max-w-4xl rounded-2xl overflow-hidden relative my-8 flex flex-col md:flex-row animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
+          <div className="glass-panel w-full max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden relative flex flex-col animate-in fade-in zoom-in-95 duration-200">
             <button
               onClick={() => setViewProduct(null)}
-              className="absolute top-4 right-4 z-10 bg-black/50 p-2 rounded-full text-gray-400 hover:text-white hover:bg-leica-red transition-colors"
+              className="absolute top-4 right-4 z-20 bg-black/50 p-2 rounded-full text-gray-400 hover:text-white hover:bg-leica-red transition-colors"
             >
               <X size={24} />
             </button>
             
-            {/* Image Gallery Side */}
-            <div className="w-full md:w-1/2 bg-leica-gray min-h-[300px] flex flex-col">
-              <div className="flex-grow flex items-center justify-center p-4 relative">
-                {viewProduct.images.length > 0 ? (
-                  <img 
-                    src={viewProduct.images[currentImageIndex].startsWith('data:image') ? viewProduct.images[currentImageIndex] : `https://lh3.googleusercontent.com/d/${viewProduct.images[currentImageIndex]}`} 
-                    alt={viewProduct.model}
-                    className="max-w-full max-h-[500px] object-contain"
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${viewProduct.model}/800/600`;
-                    }}
-                  />
-                ) : (
-                  <Camera size={64} className="text-gray-600" />
-                )}
-                <div className="absolute top-4 left-4 bg-leica-red px-3 py-1 rounded-full text-xs font-bold text-white uppercase tracking-wider">
-                  {viewProduct.condition}
-                </div>
-              </div>
-              
-              {/* Thumbnails if multiple images */}
-              {viewProduct.images.length > 1 && (
-                <div className="flex gap-2 p-4 overflow-x-auto bg-black/20 custom-scrollbar">
-                  {viewProduct.images.map((img, idx) => (
+            <div className="flex flex-col md:flex-row overflow-y-auto custom-scrollbar h-full">
+              {/* Image Gallery Side */}
+              <div className="w-full md:w-1/2 bg-leica-gray min-h-[300px] flex flex-col">
+                <div className="flex-grow flex items-center justify-center p-4 relative">
+                  {viewProduct.images.length > 0 ? (
                     <img 
-                      key={idx}
-                      src={img.startsWith('data:image') ? img : `https://lh3.googleusercontent.com/d/${img}`} 
-                      alt={`${viewProduct.model} ${idx + 1}`}
-                      onClick={() => setCurrentImageIndex(idx)}
-                      className={`w-16 h-16 object-cover rounded cursor-pointer border-2 transition-colors flex-shrink-0 ${currentImageIndex === idx ? 'border-leica-red' : 'border-transparent hover:border-white/50'}`}
+                      src={viewProduct.images[currentImageIndex].startsWith('data:image') ? viewProduct.images[currentImageIndex] : `https://lh3.googleusercontent.com/d/${viewProduct.images[currentImageIndex]}`} 
+                      alt={viewProduct.model}
+                      className="max-w-full max-h-[400px] md:max-h-[500px] object-contain"
                       referrerPolicy="no-referrer"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${viewProduct.model}${idx}/100/100`;
+                        (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${viewProduct.model}/800/600`;
                       }}
                     />
-                  ))}
+                  ) : (
+                    <Camera size={64} className="text-gray-600" />
+                  )}
+                  <div className="absolute top-4 left-4 bg-leica-red px-3 py-1 rounded-full text-xs font-bold text-white uppercase tracking-wider">
+                    {viewProduct.condition}
+                  </div>
                 </div>
-              )}
-            </div>
-
-            {/* Details Side */}
-            <div className="w-full md:w-1/2 p-8 flex flex-col">
-              <div className="mb-6">
-                <p className="text-leica-red font-bold uppercase tracking-widest mb-1">{viewProduct.brand}</p>
-                <h2 className="text-3xl font-bold text-white mb-2">{viewProduct.model}</h2>
-                <p className="text-2xl font-mono text-white">฿{viewProduct.sellPrice.toLocaleString()}</p>
+                
+                {/* Thumbnails if multiple images */}
+                {viewProduct.images.length > 1 && (
+                  <div className="flex gap-2 p-4 overflow-x-auto bg-black/20 custom-scrollbar">
+                    {viewProduct.images.map((img, idx) => (
+                      <img 
+                        key={idx}
+                        src={img.startsWith('data:image') ? img : `https://lh3.googleusercontent.com/d/${img}`} 
+                        alt={`${viewProduct.model} ${idx + 1}`}
+                        onClick={() => setCurrentImageIndex(idx)}
+                        className={`w-16 h-16 object-cover rounded cursor-pointer border-2 transition-colors flex-shrink-0 ${currentImageIndex === idx ? 'border-leica-red' : 'border-transparent hover:border-white/50'}`}
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${viewProduct.model}${idx}/100/100`;
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
 
-              <div className="space-y-4 flex-grow">
-                <div>
-                  <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-1">Included / รายละเอียด</h4>
-                  <p className="text-gray-300 bg-white/5 p-4 rounded-lg leading-relaxed whitespace-pre-wrap">
-                    {viewProduct.note || 'ไม่มีรายละเอียดเพิ่มเติม'}
-                  </p>
+              {/* Details Side */}
+              <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col">
+                <div className="mb-6 pr-8">
+                  <p className="text-leica-red font-bold uppercase tracking-widest mb-1">{viewProduct.brand}</p>
+                  <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">{viewProduct.model}</h2>
+                  <p className="text-xl md:text-2xl font-mono text-white">฿{viewProduct.sellPrice.toLocaleString()}</p>
                 </div>
-              </div>
 
-              <div className="mt-8 pt-6 border-t border-white/10">
-                <button
-                  onClick={() => {
-                    setViewProduct(null);
-                    setSelectedProduct(viewProduct);
-                  }}
-                  className="w-full bg-leica-red hover:bg-red-700 text-white font-bold py-4 px-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-lg uppercase tracking-wider shadow-lg shadow-red-900/20"
-                >
-                  <ShoppingBag size={20} />
-                  สั่งซื้อสินค้านี้
-                </button>
+                <div className="space-y-4 flex-grow">
+                  <div>
+                    <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-1">Included / รายละเอียด</h4>
+                    <p className="text-gray-300 bg-white/5 p-4 rounded-lg leading-relaxed whitespace-pre-wrap text-sm md:text-base">
+                      {viewProduct.note || 'ไม่มีรายละเอียดเพิ่มเติม'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-white/10">
+                  <button
+                    onClick={() => {
+                      setViewProduct(null);
+                      setSelectedProduct(viewProduct);
+                    }}
+                    className="w-full bg-leica-red hover:bg-red-700 text-white font-bold py-3 md:py-4 px-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-base md:text-lg uppercase tracking-wider shadow-lg shadow-red-900/20"
+                  >
+                    <ShoppingBag size={20} />
+                    สั่งซื้อสินค้านี้
+                  </button>
+                </div>
               </div>
             </div>
           </div>
