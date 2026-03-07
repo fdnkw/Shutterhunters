@@ -32,7 +32,7 @@ export default function Footer() {
               <Instagram size={16} />
               IG: ShutterHunters.bkk
             </a>
-            <a href="https://facebook.com/ShutterHuntersBKK" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-leica-red transition-colors">
+            <a href="https://www.facebook.com/profile.php?id=100094001764835" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-leica-red transition-colors">
               <Facebook size={16} />
               Facebook: ShutterHunters BKK
             </a>
