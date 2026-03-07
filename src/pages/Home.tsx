@@ -18,8 +18,18 @@ export default function Home() {
   const [buyerName, setBuyerName] = useState('');
   const [buyerPhone, setBuyerPhone] = useState('');
   const [buyerAddress, setBuyerAddress] = useState('');
+  const [selectedBrand, setSelectedBrand] = useState<string>('All');
 
-  const availableProducts = products.filter(p => p.status === 'ถ่ายรูปแล้ว' || p.status === 'รอถ่ายรูป');
+  const BRANDS = [
+    'All', 'Leica', 'Voigtlander', 'Sigma', 'Ricoh', 'Hasselblad', 
+    'Fujifilm', 'Sony', 'Contax', 'Olympus', 'Other brand'
+  ];
+
+  const availableProducts = products.filter(p => p.status === 'ถ่ายรูปแล้ว');
+  
+  const filteredProducts = selectedBrand === 'All' 
+    ? availableProducts 
+    : availableProducts.filter(p => p.brand === selectedBrand);
 
   const handleViewProduct = (product: Product) => {
     setViewProduct(product);
@@ -144,12 +154,31 @@ export default function Home() {
 
       {/* Product Grid */}
       <section>
-        <h2 className="text-2xl font-bold mb-8 uppercase tracking-wider border-l-4 border-leica-red pl-4">
-          Available Gear
-        </h2>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <h2 className="text-2xl font-bold uppercase tracking-wider border-l-4 border-leica-red pl-4">
+            Available Gear
+          </h2>
+        </div>
+
+        {/* Brand Filters */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          {BRANDS.map(brand => (
+            <button
+              key={brand}
+              onClick={() => setSelectedBrand(brand)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
+                selectedBrand === brand 
+                  ? 'bg-leica-red text-white border-leica-red' 
+                  : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10 hover:border-white/20'
+              }`}
+            >
+              {brand}
+            </button>
+          ))}
+        </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {availableProducts.map((product) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          {filteredProducts.map((product) => (
             <div 
               key={product.id} 
               className="glass-panel rounded-2xl overflow-hidden group hover:border-leica-red/50 transition-colors cursor-pointer flex flex-col"
@@ -169,36 +198,36 @@ export default function Home() {
                 ) : (
                   <Camera size={48} className="text-gray-500" />
                 )}
-                <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium border border-white/10">
+                <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-black/80 backdrop-blur-md px-2 py-1 md:px-3 rounded-full text-[10px] md:text-xs font-medium border border-white/10">
                   {product.condition}
                 </div>
               </div>
               
-              <div className="p-6 flex flex-col flex-grow">
-                <div className="flex justify-between items-start mb-4">
+              <div className="p-4 md:p-6 flex flex-col flex-grow">
+                <div className="flex flex-col md:flex-row justify-between items-start mb-2 md:mb-4 gap-1 md:gap-0">
                   <div>
-                    <p className="text-leica-red text-sm font-bold uppercase tracking-wider">{product.brand}</p>
-                    <h3 className="text-xl font-bold text-white">{product.model}</h3>
+                    <p className="text-leica-red text-[10px] md:text-sm font-bold uppercase tracking-wider">{product.brand}</p>
+                    <h3 className="text-sm md:text-xl font-bold text-white line-clamp-1">{product.model}</h3>
                   </div>
-                  <p className="text-lg font-mono">฿{product.sellPrice.toLocaleString()}</p>
+                  <p className="text-sm md:text-lg font-mono font-bold text-leica-red md:text-white">฿{product.sellPrice.toLocaleString()}</p>
                 </div>
                 
-                <p className="text-sm text-gray-400 mb-6 line-clamp-2 flex-grow">{product.note}</p>
+                <p className="text-xs md:text-sm text-gray-400 mb-4 md:mb-6 line-clamp-2 flex-grow">{product.note}</p>
                 
                 <button
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent opening the view modal
                     setSelectedProduct(product);
                   }}
-                  className="w-full bg-white text-black hover:bg-leica-red hover:text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-white text-black hover:bg-leica-red hover:text-white font-bold py-2 md:py-3 px-2 md:px-4 rounded-lg transition-colors flex items-center justify-center gap-1 md:gap-2 text-xs md:text-base"
                 >
-                  <ShoppingBag size={18} />
-                  สั่งซื้อสินค้า
+                  <ShoppingBag size={16} className="hidden md:block" />
+                  สั่งซื้อ
                 </button>
               </div>
             </div>
           ))}
-          {availableProducts.length === 0 && (
+          {filteredProducts.length === 0 && (
             <div className="col-span-full text-center py-20 text-gray-500 glass-panel rounded-2xl">
               <Package size={48} className="mx-auto mb-4 opacity-50" />
               <p>ไม่มีสินค้าพร้อมขายในขณะนี้</p>
@@ -269,21 +298,10 @@ export default function Home() {
 
               <div className="space-y-4 flex-grow">
                 <div>
-                  <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-1">รายละเอียด / ตำหนิ</h4>
+                  <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-1">Included / รายละเอียด</h4>
                   <p className="text-gray-300 bg-white/5 p-4 rounded-lg leading-relaxed whitespace-pre-wrap">
                     {viewProduct.note || 'ไม่มีรายละเอียดเพิ่มเติม'}
                   </p>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white/5 p-3 rounded-lg">
-                    <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-1">Serial Number</h4>
-                    <p className="text-sm text-white font-mono">{viewProduct.serialNumber}</p>
-                  </div>
-                  <div className="bg-white/5 p-3 rounded-lg">
-                    <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-1">สถานะ</h4>
-                    <p className="text-sm text-white">{viewProduct.status}</p>
-                  </div>
                 </div>
               </div>
 
