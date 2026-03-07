@@ -4,7 +4,6 @@ import { useStore } from '../store';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import LoginModal from './LoginModal';
-import { MessageCircle } from 'lucide-react';
 
 export default function Layout() {
   const { fetchData, isLoading } = useStore();
@@ -34,10 +33,15 @@ export default function Layout() {
         href="https://line.me/R/ti/p/@shutterhunters.bkk"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 left-6 z-40 bg-[#00B900] hover:bg-[#009900] text-white p-4 rounded-full shadow-lg transition-transform hover:scale-110 flex items-center justify-center"
+        className="fixed bottom-6 left-6 z-40 transition-transform hover:scale-110 flex items-center justify-center drop-shadow-lg"
         title="ติดต่อทาง Line"
       >
-        <MessageCircle size={28} />
+        <img 
+          src="https://static.vecteezy.com/system/resources/previews/023/986/890/original/line-app-logo-line-app-logo-transparent-line-app-icon-transparent-free-free-png.png" 
+          alt="Line" 
+          className="w-14 h-14 object-contain"
+          referrerPolicy="no-referrer"
+        />
       </a>
     </div>
   );
